@@ -22,3 +22,4 @@
 - **产品路线确认 / Product framing**: 当前网页版 = 最小可用性测试（MVP）；后续依次为 桌面端独立轻量软件（local-first）、网页+软件一起收纳、多 AI 一起收纳、看板视图迭代。README 已增 Roadmap 区块。
 - **圆球 toggle / Toggle**: 用户反馈「再次点击应放大并移除看板卡片」。已修正 `content.js`：点击逻辑改为切换——已收纳时点击 → `DELETE /api/session?url=` 移除、圆球长回大球；未收纳时点击 → POST 收纳。提示文字改为「已收纳 · 再次点击移除」。
 - **进展页 / Progress page**: 新增 `PROGRESS.md`（对外进展汇总，区别于逐日流水 DEVLOG），并在 README 顶部加链接。约定：代码改动累积到一定量时由维护者总结更新本页。
+- **PROGRESS 改版 / Progress restyle**: 改为表格化、同一天合并一行、日期用品牌紫 emoji 圆点 + 加粗使其醒目（GitHub markdown 不支持自定义文字色，故用 emoji 实现彩色）。
