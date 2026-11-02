@@ -132,7 +132,3 @@ ai-ing-hub/
 - 「跳回」目前用 `window.open` 打开 / 聚焦 URL；要做到「精确聚焦已有标签」需扩展 background 与中枢建立桥接（`chrome.tabs` API）。
 - 桌面原生 AI App（本地 LLM 客户端等）需另接其本地日志 / API。
 - 应用内中英文切换（i18n）为规划中功能。
-
-## 许可证 · License
-
-代码以 MIT 开源。Code is MIT-licensed.
