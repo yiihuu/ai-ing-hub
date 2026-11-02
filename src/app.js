@@ -150,6 +150,30 @@ function applyView() {
 
 searchEl.addEventListener('input', applyView);
 
+// 空状态：先看示例（不需要装任何东西）
+const demoBtn = document.getElementById('demoBtn');
+if (demoBtn) demoBtn.addEventListener('click', async () => {
+  const samples = [
+    { provider: 'ChatGPT', title: '论文综述思路整理', url: 'https://chatgpt.com/c/demo-1',
+      preview: '帮我对比三种研究设计的优劣，并列出各自适合的场景与风险…' },
+    { provider: 'Claude', title: 'Dashboard 交互稿', url: 'https://claude.ai/c/demo-2',
+      preview: '给多模态数据一个统一入口：左侧导航、右侧详情、可拖拽重排…' },
+    { provider: 'Gemini', title: '访谈提纲润色', url: 'https://gemini.google.com/c/demo-3',
+      preview: '把这份预形成性研究的话术改得更自然，少一点引导性…' }
+  ];
+  for (const s of samples) {
+    await fetch('/api/session', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(s)
+    });
+  }
+});
+// 空状态：展开安装说明
+const howBtn = document.getElementById('howBtn');
+if (howBtn) howBtn.addEventListener('click', () => {
+  const h = document.getElementById('howto');
+  h.hidden = !h.hidden;
+});
+
 // ---------- SSE + 兜底拉取 ----------
 function connectSSE() {
   const es = new EventSource('/api/events');
