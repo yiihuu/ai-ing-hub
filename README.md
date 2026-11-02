@@ -15,7 +15,7 @@
 
 ## 问题背景 · Background
 
-- 作为个人消费者，日常需要在 ChatGPT、Claude 等多个 AI 软件之间切换，回看自己进行中的任务变得碎片化、难以追踪。
+- 作为个人消费者，日常需要在 ChatGPT、Claude 等多个 AI 软件之间切换，回看自己进行中的任务变得碎片化、难以追踪。并且，作为ai coding的个人开发者或学生，日常需要在多个ai中进行切换。我们常希望榨干有限的ai——譬如这句话——我可以闲着，但ai不能闲着。我们在多任务处理时，常常需要在不同ai之间看，是否任务有所完成。有时候，ai的“已完成”信息也会弹出，迫使你原本在进行与一个ai的chat的打断——你会倾向选择去看一眼，查验一下这个任务完成情况如何。
 - As an individual consumer, daily work spans multiple AIs (ChatGPT, Claude, …); tracking in-progress tasks becomes fragmented and hard to revisit.
 
 ## 功能特性 · Features
