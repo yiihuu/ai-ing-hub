@@ -1,0 +1,16 @@
+{
+  "name": "ai-session-hub",
+  "version": "0.1.0",
+  "private": true,
+  "description": "本地优先的跨 AI 会话中枢：把进行中的 ChatGPT / Claude 对话收进一个 卡片网格图库，点击即跳回。",
+  "scripts": {
+    "dev": "node server.js",
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0"
+  }
+}

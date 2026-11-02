@@ -1,0 +1,21 @@
+[package]
+name = "ai-session-hub"
+version = "0.1.0"
+edition = "2021"
+description = "本地优先的跨 AI 会话中枢"
+default-run = "ai-session-hub"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>会话中枢</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span class="brand-name">会话中枢</span>
+      <span class="brand-sub">进行中的 AI 对话</span>
+    </div>
+    <div class="search">
+      <input id="search" type="text" placeholder="搜索对话…" autocomplete="off" />
+    </div>
+    <div class="count" id="count">0 个进行中</div>
+  </header>
+
+  <nav class="filters" id="filters"></nav>
+
+  <main class="gallery" id="gallery"></main>
+
+  <div class="empty" id="empty" hidden>
+    <div class="empty-art">📷</div>
+    <div class="empty-title">还没有进行中的对话</div>
+    <div class="empty-sub">打开 ChatGPT 或 Claude 开始一个对话，它会自动出现在这里。<br/>点击卡片即可跳回你原本的 AI 任务。</div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

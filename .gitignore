@@ -1,0 +1,19 @@
+# 运行时生成的数据（仅会话元数据索引，不入库）
+sessions.json
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Tauri / Rust 构建产物
+src-tauri/target/
+src-tauri/gen/
+
+# 编辑器 / 系统
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# 环境变量
+.env
