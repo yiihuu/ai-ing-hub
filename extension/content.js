@@ -1,8 +1,9 @@
 // AI 会话中枢 —— 捕获层（content script）
-// 交互：在 AI 对话页注入一个常驻浮点 dot。
+// 交互：在 AI 对话页注入一个常驻浮点 dot，每个页面始终存在。
+//   形态：小圆球 = 已收纳；大圆球 = 未收纳 / 已移除收纳。
 //   主交互：点击 dot → 收纳「当前对话」（最稳，不依赖选中文字拖拽）。
 //   附带：选中对话文字拖到 dot 上 → 带预览收纳。
-// 设计主张：手动「点/拖一次」即记住该任务（按 url 持久化），无需反复操作。
+//   点/拖一次即按 url 记住该任务，无需反复操作。
 const HUB = 'http://127.0.0.1:54321';
 
 function providerOf() {
@@ -16,8 +17,24 @@ function cleanTitle() {
   return (document.title || providerOf()).replace(/[-–—]\s*(ChatGPT|Claude|Gemini).*$/i, '').trim() || providerOf();
 }
 
-function ensureDot() {
-  if (document.getElementById('ai-ing-dot')) return;
+let dotEl = null;
+
+function markSaved() {
+  if (!dotEl) return;
+  dotEl.classList.add('is-saved');
+  dotEl.title = '已收纳 · 再点一下可更新预览';
+  const h = dotEl.querySelector('.ai-ing-dot__hint');
+  if (h) h.textContent = '已收纳 · 点击更新';
+}
+function markUnsaved() {
+  if (!dotEl) return;
+  dotEl.classList.remove('is-saved');
+  dotEl.title = '点击收纳当前对话（或选中文字拖到这里）';
+  const h = dotEl.querySelector('.ai-ing-dot__hint');
+  if (h) h.textContent = '点击收纳当前对话';
+}
+
+function buildDot() {
   const dot = document.createElement('div');
   dot.id = 'ai-ing-dot';
   dot.className = 'ai-ing-dot';
@@ -26,6 +43,7 @@ function ensureDot() {
     '<span class="ai-ing-dot__hint">点击收纳当前对话</span>' +
     '<span class="ai-ing-dot__core"></span>';
   document.body.appendChild(dot);
+  dotEl = dot;
 
   // 拖动 dot 自身以 reposition（pointer 事件）；未移动则视为「点击 = 收纳」
   let drag = null, moved = false;
@@ -61,19 +79,26 @@ function ensureDot() {
                   e.dataTransfer.getData('text/uri-list') || '').trim();
     capture(text);
   });
+  return dot;
+}
 
-  // 已收纳则标记（点/拖一次就记住）
+function ensureDot() {
+  if (!document.body) return;
+  if (!document.getElementById('ai-ing-dot')) buildDot();
+}
+
+function syncSaved() {
+  const dot = document.getElementById('ai-ing-dot');
+  if (!dot) return;
+  const url = location.href.split('?')[0];
   fetch(`${HUB}/api/sessions`).then(r => r.json()).then(list => {
-    if (Array.isArray(list) && list.some(s => s.url === location.href.split('?')[0])) {
-      dot.classList.add('is-saved');
-      dot.title = '已收纳 · 再点一下可更新预览';
-      const h = dot.querySelector('.ai-ing-dot__hint'); if (h) h.textContent = '已收纳 · 点击更新';
-    }
+    if (Array.isArray(list) && list.some(s => s.url === url)) markSaved();
+    else markUnsaved();   // 未收纳，或已在图库移除 → 一律显示大圆球
   }).catch(() => {});
 }
 
 function capture(preview) {
-  const dot = document.getElementById('ai-ing-dot');
+  const dot = document.getElementById('ai-ing-dot') || dotEl;
   if (!dot) return;
   const url = location.href.split('?')[0];
   const data = {
@@ -89,18 +114,39 @@ function capture(preview) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
   }).then(() => {
-    dot.classList.add('is-saved');
+    markSaved();
     dot.classList.remove('pulse');
     void dot.offsetWidth;            // 重启动画
     dot.classList.add('pulse');
-    dot.title = '已收纳 · 再点一下可更新预览';
-    const h = dot.querySelector('.ai-ing-dot__hint'); if (h) h.textContent = '已收纳 · 点击更新';
   }).catch(() => {});
 }
 
-// SPA 软导航后补注（部分 AI 站点是客户端路由）
-let lastHref = location.href;
+// —— 启动 ——
 ensureDot();
+syncSaved();
+
+// 周期性保证 dot 存在 + 同步收纳状态
+// 应对：SPA 重渲染冲掉 dot、切换对话、图库里移除卡片（圆球应长回大球）
 setInterval(() => {
-  if (location.href !== lastHref) { lastHref = location.href; ensureDot(); }
-}, 1500);
+  ensureDot();
+  syncSaved();
+}, 1200);
+
+// 监听 dot 被页面重渲染移除 → 立即重建（不等待轮询），并恢复正确形态
+let moThrottle = false;
+function startObserver() {
+  if (!document.body) { setTimeout(startObserver, 300); return; }
+  const mo = new MutationObserver(() => {
+    if (moThrottle) return;
+    moThrottle = true;
+    setTimeout(() => {
+      moThrottle = false;
+      if (!document.getElementById('ai-ing-dot')) {
+        buildDot();
+        syncSaved();
+      }
+    }, 200);
+  });
+  mo.observe(document.body, { childList: true });
+}
+startObserver();
