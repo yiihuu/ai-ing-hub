@@ -14,5 +14,7 @@
 ## 2026-11-03
 - **交互转向 / Pivot**：从「扩展自动轮询抓取」改为「浮点 dot + 拖拽收纳」为主交互。评估结论：手动拖（拖一次按 url 记住）信噪比更高、来源无关、更隐私，契合「本地优先、仅管元数据」的卖点；自动抓取仅作可选增强。
 - 实现 / Build：扩展新增 `dot.css`（浮点 dot 视觉），重写 `content.js`——注入常驻浮点、可拖动 reposition、dragover/drop 收纳、注入时查 `/api/sessions` 标记「已收纳」（拖一次就记住）。manifest 增加 `dot.css` 与 Gemini 源。
-- 验证 / Verify：需 `node server.js` 起服务后，在 ChatGPT/Claude/Gemini 页面实测「选中文字拖到 dot → 图库出现卡片」。
+- **捕获交互再修正 / Capture fix**：实测发现 ChatGPT/Claude 等网页会拦截「选中文字拖拽」，文字拖不到 dot。改为主交互「点击 dot 收纳当前对话」，选中文字拖拽降为附带增强。dot.css 光标/动效改为点击反馈。
+- README：Huabu 从定位句抽出，移入 `Related Work` 留待作者自写占位；全文「拖拽收纳」措辞改为「点击/拖拽收纳」。
+- 验证 / Verify：`node server.js` 起服务后，在 AI 对话页点击 dot → 图库应即时出现该对话卡片（SSE 推送）。
 - 下一步 / Next：应用内 i18n 切换；评估「自动发现 + 手动确认」增强；文档脚手架（private）。

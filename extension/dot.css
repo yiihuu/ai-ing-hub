@@ -12,12 +12,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: grab;
+  cursor: pointer;
   touch-action: none;
   user-select: none;
   transition: transform .28s cubic-bezier(.34, 1.56, .64, 1), box-shadow .28s ease;
 }
-.ai-ing-dot:active { cursor: grabbing; }
+.ai-ing-dot:active { transform: scale(.92); }
 .ai-ing-dot__core {
   width: 22px;
   height: 22px;

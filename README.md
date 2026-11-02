@@ -22,8 +22,8 @@
 - A unified cross-AI view: in-progress chats from multiple AIs gathered into one card grid; tap to jump back.
 - 本地优先、仅存元数据：不保存对话正文，隐私极简。
 - Local-first, metadata-only: message bodies are never stored; minimal privacy surface.
-- 拖拽收纳：在对话页注入一个常驻浮点，选中对话文字拖到浮点上即收纳进图库；拖一次即按 url 记住该任务，无需重复操作。
-- Drag-to-capture: a persistent floating dot is injected into the chat page; drag selected text onto it to file the conversation. One drag pins the task by URL — no repeat gestures.
+- 点击/拖拽收纳：在对话页注入一个常驻浮点，点击浮点即把当前对话收纳进图库；也可选中文字拖到浮点上（带预览）。点/拖一次即按 url 记住该任务，无需重复操作。
+- Capture by click or drag: a persistent floating dot is injected into the chat page; click it to file the current conversation, or drag selected text onto it (with preview). One gesture pins the task by URL — no repeat needed.
 - 轻量：中枢服务零依赖（Node），桌面壳可选（Tauri）。
 - Lightweight: the hub server is zero-dependency (Node); the desktop shell is optional (Tauri).
 
@@ -47,8 +47,9 @@
 > 现有跨 AI 工具多从「历史归档与全文搜索」入手；本项目以「进行中任务的实时切换」为切入点，用卡片网格与克制流畅的交互，把跨 AI 的上下文切换从「多窗口翻找」降维成「在网格里点一张卡片」，并坚持本地优先、仅管理元数据。
 > Existing cross-AI tools start from history archiving and full-text search. We start from real-time switching of in-progress tasks: a card grid with restrained, fluid interaction that reduces cross-AI context-switching from "hunting through windows" to "tapping a card in a grid" — local-first, metadata-only.
 
-> 不是存档，是跳回现场：它们帮你「找回过去的对话」，你帮「回到正在做的那个对话」；前者是记忆，后者是工作流切换。
-> Not an archive, but a jump-back: they help you retrieve past chats; we help you return to the one you are working on.
+### 学术相关工作（待补充）· Academic related work (to be written)
+
+- Microsoft Research Asia 的 **Huabu** —— 待补充 / to be written by author.
 
 ## 架构 · Architecture
 
@@ -61,8 +62,8 @@ AI 对话源 ──(浏览器扩展捕获)──▶ 本地中枢服务 ──▶
                               点击卡片 ──▶ window.open 跳回原对话
 ```
 
-- 捕获层 Capture：浏览器扩展在 AI 对话页注入常驻浮点 dot；用户选中对话文字拖到 dot 上，扩展抽取 `{provider, title, url, favicon, preview, ts}` 并 POST 到本地服务。按 url 持久化，拖一次即记住。
-- Capture layer: the extension injects a persistent floating dot into AI chat pages; dragging selected text onto it extracts `{provider, title, url, favicon, preview, ts}` and POSTs to the local hub. Pinned by URL, so one drag is remembered.
+- 捕获层 Capture：浏览器扩展在 AI 对话页注入常驻浮点 dot；点击 dot 即收纳当前对话（或选中文字拖到 dot 上，带预览），扩展抽取 `{provider, title, url, favicon, preview, ts}` 并 POST 到本地服务。按 url 持久化，点/拖一次即记住。
+- Capture layer: the extension injects a persistent floating dot into AI chat pages; clicking it files the current conversation (or drag selected text onto it for a preview). It extracts `{provider, title, url, favicon, preview, ts}` and POSTs to the local hub, pinned by URL.
 - Hub server `server.js`：零依赖 Node；`POST /api/session` 上报、`DELETE /api/session?url=` 移除、`GET /api/events` SSE 实时推送；仅存元数据，不存对话正文。
 - 图库界面 Gallery `src/`：卡片网格前端，按厂商筛选 / 搜索，丝滑进出场动画。
 - Gallery UI `src/`: card-grid frontend with vendor filter, search, springy enter/exit animations.
@@ -77,12 +78,13 @@ node server.js
 # 打开 / open http://127.0.0.1:54321
 ```
 
-### 方式二 · 浏览器扩展（拖拽捕获）· Browser extension
+### 方式二 · 浏览器扩展（点击收纳）· Browser extension
 
 1. Chrome / Edge → 扩展管理 → 开启「开发者模式」。
 2. 「加载已解压的扩展程序」→ 选择 `extension/` 目录。
 3. 打开 ChatGPT / Claude / Gemini 对话，页面右下角出现浮点 dot。
-4. 在对话中选中一段文字，拖到 dot 上 → 卡片出现在图库；已收纳的对话 dot 会显示「已收纳」状态。
+4. **点击 dot** → 当前对话立即出现在图库；已收纳的 dot 会显示「已收纳」状态。
+   （进阶：在对话中选中一段文字，拖到 dot 上可带上预览片段。）
 
 ### 方式三 · 桌面端（可选）· Desktop (Tauri, optional)
 
@@ -115,8 +117,8 @@ ai-ing-hub/
 
 ## 已知边界 · Known Limitations
 
-- 拖拽收纳依赖用户主动操作（先选中文字再拖）。后续可叠加「自动发现 + 手动确认」作为可选增强。
-- Drag-to-capture requires an active gesture (select then drag). An optional "auto-discover + confirm" layer can be added later.
+- 收纳依赖用户一次主动操作（点击浮点，或选中文字拖到浮点）。后续可叠加「自动发现 + 手动确认」作为可选增强。
+- Capture requires one active gesture (click the dot, or drag selected text onto it). An optional "auto-discover + confirm" layer can be added later.
 - 「跳回」目前用 `window.open` 打开 / 聚焦 URL；要做到「精确聚焦已有标签」需扩展 background 与中枢建立桥接（`chrome.tabs` API）。
 - 桌面原生 AI App（本地 LLM 客户端等）需另接其本地日志 / API。
 - 应用内中英文切换（i18n）为规划中功能。
