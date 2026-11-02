@@ -1,9 +1,9 @@
 // AI 会话中枢 —— 捕获层（content script）
 // 交互：在 AI 对话页注入一个常驻浮点 dot，每个页面始终存在。
 //   形态：小圆球 = 已收纳；大圆球 = 未收纳 / 已移除收纳。
-//   主交互：点击 dot → 收纳「当前对话」（最稳，不依赖选中文字拖拽）。
+//   主交互：点击 dot → 收纳「当前对话」；再次点击 → 移除收纳（看板卡片消失，圆球放大）。
 //   附带：选中对话文字拖到 dot 上 → 带预览收纳。
-//   点/拖一次即按 url 记住该任务，无需反复操作。
+//   收纳状态按 url 持久化；图库里移除卡片时，圆球也会自动长回大球。
 const HUB = 'http://127.0.0.1:54321';
 
 function providerOf() {
@@ -22,9 +22,9 @@ let dotEl = null;
 function markSaved() {
   if (!dotEl) return;
   dotEl.classList.add('is-saved');
-  dotEl.title = '已收纳 · 再点一下可更新预览';
+  dotEl.title = '已收纳 · 再次点击移除';
   const h = dotEl.querySelector('.ai-ing-dot__hint');
-  if (h) h.textContent = '已收纳 · 点击更新';
+  if (h) h.textContent = '已收纳 · 再次点击移除';
 }
 function markUnsaved() {
   if (!dotEl) return;
@@ -63,10 +63,14 @@ function buildDot() {
     dot.style.top  = Math.max(8, Math.min(innerHeight - 64, drag.t + e.clientY - drag.y)) + 'px';
   });
   dot.addEventListener('pointerup', e => {
-    const wasClick = drag && !moved;     // 没拖动 = 点击 → 收纳当前对话
+    const wasClick = drag && !moved;     // 没拖动 = 点击
     drag = null;
     try { dot.releasePointerCapture(e.pointerId); } catch (_) {}
-    if (wasClick) capture('');
+    if (wasClick) {
+      // 切换：已收纳 → 移除；未收纳 → 收纳
+      if (dot.classList.contains('is-saved')) removeCapture();
+      else capture('');
+    }
   });
 
   // 拖拽收纳（附带增强）：把选中的对话文字拖到 dot 上
@@ -119,6 +123,21 @@ function capture(preview) {
     void dot.offsetWidth;            // 重启动画
     dot.classList.add('pulse');
   }).catch(() => {});
+}
+
+// 切换收纳的反向操作：从枢纽移除当前对话（看板卡片随之消失），圆球长回大球
+function removeCapture() {
+  const dot = document.getElementById('ai-ing-dot') || dotEl;
+  if (!dot) return;
+  const url = location.href.split('?')[0];
+  fetch(`${HUB}/api/session?url=${encodeURIComponent(url)}`, { method: 'DELETE' })
+    .then(() => {
+      markUnsaved();
+      dot.classList.remove('pulse');
+      void dot.offsetWidth;            // 重启动画
+      dot.classList.add('pulse');
+    })
+    .catch(() => {});
 }
 
 // —— 启动 ——

@@ -11,6 +11,8 @@
 >
 > A local-first cross-AI session hub that gathers your in-progress ChatGPT / Claude conversations into a card-grid view. Tap a card to jump back to the original chat; remove it when done. Nothing leaves your machine.
 
+📈 **进展 / Progress** → [PROGRESS.md](./PROGRESS.md) · 📓 开发日志 / Devlog → [DEVLOG.md](./DEVLOG.md)
+
 ## 问题背景 · Background
 
 - 作为个人消费者，日常需要在 ChatGPT、Claude 等多个 AI 软件之间切换，回看自己进行中的任务变得碎片化、难以追踪。
@@ -112,6 +114,7 @@ ai-ing-hub/
 │   ├── src/{main,lib}.rs
 │   └── capabilities/default.json
 ├── DEVLOG.md              # 公开开发日志 Public devlog
+├── PROGRESS.md            # 对外进展汇总 Progress summary
 └── sessions.json          # 运行时生成（持久化索引，已 gitignore）Runtime index
 ```
 
