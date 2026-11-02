@@ -67,6 +67,7 @@ function ensureDot() {
     if (Array.isArray(list) && list.some(s => s.url === location.href.split('?')[0])) {
       dot.classList.add('is-saved');
       dot.title = '已收纳 · 再点一下可更新预览';
+      const h = dot.querySelector('.ai-ing-dot__hint'); if (h) h.textContent = '已收纳 · 点击更新';
     }
   }).catch(() => {});
 }
@@ -93,6 +94,7 @@ function capture(preview) {
     void dot.offsetWidth;            // 重启动画
     dot.classList.add('pulse');
     dot.title = '已收纳 · 再点一下可更新预览';
+    const h = dot.querySelector('.ai-ing-dot__hint'); if (h) h.textContent = '已收纳 · 点击更新';
   }).catch(() => {});
 }
 

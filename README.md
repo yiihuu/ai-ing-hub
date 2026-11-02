@@ -115,6 +115,16 @@ ai-ing-hub/
 └── sessions.json          # 运行时生成（持久化索引，已 gitignore）Runtime index
 ```
 
+## 路线规划 · Roadmap
+
+- 当前形态为**网页版最小可用性测试（MVP）**：浏览器扩展 + 本地中枢，验证「点击浮点收纳、卡片网格跳回」的核心闭环。
+- The current web build is a **minimum-usability test (MVP)**: browser extension + local hub validating the core loop "click dot to capture, tap card to jump back".
+- 后续阶段 / Next phases:
+  - **桌面端形态 / Desktop build**：以 Tauri 封装为独立轻量软件，运行在用户自己的电脑里（local-first）。
+  - **网页端与软件端一起收纳 / Unified collection**：web 与 desktop 收纳同一批会话。
+  - **多个 AI 一起收纳 / Multi-AI at once**：并行从更多 AI 源捕获。
+  - **看板视图迭代 / Board view**：卡片网格布局将随时间迭代调整。
+
 ## 已知边界 · Known Limitations
 
 - 收纳依赖用户一次主动操作（点击浮点，或选中文字拖到浮点）。后续可叠加「自动发现 + 手动确认」作为可选增强。

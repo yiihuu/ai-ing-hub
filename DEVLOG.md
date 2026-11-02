@@ -18,3 +18,5 @@
 - README：Huabu 从定位句抽出，移入 `Related Work` 留待作者自写占位；全文「拖拽收纳」措辞改为「点击/拖拽收纳」。
 - 验证 / Verify：`node server.js` 起服务后，在 AI 对话页点击 dot → 图库应即时出现该对话卡片（SSE 推送）。
 - 下一步 / Next：应用内 i18n 切换；评估「自动发现 + 手动确认」增强；文档脚手架（private）。
+- **浮点双形态 / Dual-state dot**: 已收纳的 dot 缩小（34px，核心 13px）以区别于未收纳（56px）；提示文字切换为「已收纳 · 点击更新」。强化「收纳过 vs 未收纳」的视觉区分。
+- **产品路线确认 / Product framing**: 当前网页版 = 最小可用性测试（MVP）；后续依次为 桌面端独立轻量软件（local-first）、网页+软件一起收纳、多 AI 一起收纳、看板视图迭代。README 已增 Roadmap 区块。
