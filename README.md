@@ -22,8 +22,8 @@
 - A unified cross-AI view: in-progress chats from multiple AIs gathered into one card grid; tap to jump back.
 - 本地优先、仅存元数据：不保存对话正文，隐私极简。
 - Local-first, metadata-only: message bodies are never stored; minimal privacy surface.
-- 实时同步：新开对话自动登记，关闭即移除。
-- Live sync: a new conversation is registered automatically; remove it when done.
+- 拖拽收纳：在对话页注入一个常驻浮点，选中对话文字拖到浮点上即收纳进图库；拖一次即按 url 记住该任务，无需重复操作。
+- Drag-to-capture: a persistent floating dot is injected into the chat page; drag selected text onto it to file the conversation. One drag pins the task by URL — no repeat gestures.
 - 轻量：中枢服务零依赖（Node），桌面壳可选（Tauri）。
 - Lightweight: the hub server is zero-dependency (Node); the desktop shell is optional (Tauri).
 
@@ -61,7 +61,8 @@ AI 对话源 ──(浏览器扩展捕获)──▶ 本地中枢服务 ──▶
                               点击卡片 ──▶ window.open 跳回原对话
 ```
 
-- 捕获层 Capture：浏览器扩展注入 content script，周期抽取 `{provider, title, url, favicon, preview, ts}` 并 POST 到本地服务；新开对话自动登记。
+- 捕获层 Capture：浏览器扩展在 AI 对话页注入常驻浮点 dot；用户选中对话文字拖到 dot 上，扩展抽取 `{provider, title, url, favicon, preview, ts}` 并 POST 到本地服务。按 url 持久化，拖一次即记住。
+- Capture layer: the extension injects a persistent floating dot into AI chat pages; dragging selected text onto it extracts `{provider, title, url, favicon, preview, ts}` and POSTs to the local hub. Pinned by URL, so one drag is remembered.
 - Hub server `server.js`：零依赖 Node；`POST /api/session` 上报、`DELETE /api/session?url=` 移除、`GET /api/events` SSE 实时推送；仅存元数据，不存对话正文。
 - 图库界面 Gallery `src/`：卡片网格前端，按厂商筛选 / 搜索，丝滑进出场动画。
 - Gallery UI `src/`: card-grid frontend with vendor filter, search, springy enter/exit animations.
@@ -76,11 +77,12 @@ node server.js
 # 打开 / open http://127.0.0.1:54321
 ```
 
-### 方式二 · 浏览器扩展（捕获真实对话）· Browser extension
+### 方式二 · 浏览器扩展（拖拽捕获）· Browser extension
 
 1. Chrome / Edge → 扩展管理 → 开启「开发者模式」。
 2. 「加载已解压的扩展程序」→ 选择 `extension/` 目录。
-3. 打开或新建 ChatGPT / Claude 对话，卡片自动出现。
+3. 打开 ChatGPT / Claude / Gemini 对话，页面右下角出现浮点 dot。
+4. 在对话中选中一段文字，拖到 dot 上 → 卡片出现在图库；已收纳的对话 dot 会显示「已收纳」状态。
 
 ### 方式三 · 桌面端（可选）· Desktop (Tauri, optional)
 
@@ -99,6 +101,7 @@ ai-ing-hub/
 ├── extension/             # 浏览器扩展捕获层 Capture extension
 │   ├── manifest.json
 │   ├── content.js
+│   ├── dot.css            # 浮点 dot 视觉 Injected floating-dot styles
 │   └── background.js
 ├── src-tauri/             # Tauri 桌面壳 Desktop shell
 │   ├── Cargo.toml
@@ -112,7 +115,8 @@ ai-ing-hub/
 
 ## 已知边界 · Known Limitations
 
-- 网页 AI 的 DOM 结构会变，抓取选择器需随站点更新；目前只抓标题 / URL / 短预览，脆弱面较小。
+- 拖拽收纳依赖用户主动操作（先选中文字再拖）。后续可叠加「自动发现 + 手动确认」作为可选增强。
+- Drag-to-capture requires an active gesture (select then drag). An optional "auto-discover + confirm" layer can be added later.
 - 「跳回」目前用 `window.open` 打开 / 聚焦 URL；要做到「精确聚焦已有标签」需扩展 background 与中枢建立桥接（`chrome.tabs` API）。
 - 桌面原生 AI App（本地 LLM 客户端等）需另接其本地日志 / API。
 - 应用内中英文切换（i18n）为规划中功能。

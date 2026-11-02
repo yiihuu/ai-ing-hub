@@ -2,18 +2,24 @@
   "manifest_version": 3,
   "name": "AI 会话中枢 · 捕获",
   "version": "0.1.0",
-  "description": "将正在进行的 ChatGPT / Claude 对话，自动同步到本地的「会话中枢」图库。本地优先，数据不出本机。",
+  "description": "将正在进行的 AI 对话，通过拖拽收纳到本地「会话中枢」图库。本地优先，数据不出本机。",
   "permissions": ["tabs"],
   "host_permissions": [
     "https://chatgpt.com/*",
     "https://claude.ai/*",
+    "https://gemini.google.com/*",
     "http://127.0.0.1:54321/*"
   ],
   "background": { "service_worker": "background.js" },
   "content_scripts": [
     {
-      "matches": ["https://chatgpt.com/*", "https://claude.ai/*"],
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*"
+      ],
       "js": ["content.js"],
+      "css": ["dot.css"],
       "run_at": "document_idle"
     }
   ]

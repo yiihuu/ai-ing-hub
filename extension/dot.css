@@ -1,0 +1,59 @@
+/* AI 会话中枢 —— 浮点 dot 视觉 */
+.ai-ing-dot {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  z-index: 2147483647;
+  background: linear-gradient(150deg, #6E8BFF 0%, #B06EFF 100%);
+  box-shadow: 0 10px 28px rgba(110, 139, 255, .45), 0 2px 8px rgba(0, 0, 0, .18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition: transform .28s cubic-bezier(.34, 1.56, .64, 1), box-shadow .28s ease;
+}
+.ai-ing-dot:active { cursor: grabbing; }
+.ai-ing-dot__core {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .94);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .55);
+  transition: transform .28s cubic-bezier(.34, 1.56, .64, 1);
+}
+.ai-ing-dot.is-target {
+  transform: scale(1.18);
+  box-shadow: 0 0 0 7px rgba(110, 139, 255, .22), 0 14px 34px rgba(110, 139, 255, .55);
+}
+.ai-ing-dot.is-saved .ai-ing-dot__core {
+  box-shadow: inset 0 0 0 3px #6E8BFF, 0 0 0 4px rgba(110, 139, 255, .35);
+}
+.ai-ing-dot.pulse { animation: ai-ing-pulse .5s ease; }
+@keyframes ai-ing-pulse {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(.82); }
+  100% { transform: scale(1); }
+}
+.ai-ing-dot__hint {
+  position: absolute;
+  right: 64px;
+  white-space: nowrap;
+  background: rgba(20, 20, 30, .82);
+  color: #fff;
+  font: 500 12px/1 -apple-system, system-ui, "PingFang SC", sans-serif;
+  padding: 6px 10px;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateX(6px);
+  transition: opacity .2s ease, transform .2s ease;
+  pointer-events: none;
+}
+.ai-ing-dot:hover .ai-ing-dot__hint {
+  opacity: 1;
+  transform: translateX(0);
+}
