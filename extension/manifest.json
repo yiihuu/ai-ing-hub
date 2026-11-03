@@ -1,26 +1,34 @@
 {
   "manifest_version": 3,
-  "name": "AI 会话中枢 · 捕获",
-  "version": "0.1.0",
-  "description": "将正在进行的 AI 对话，通过拖拽收纳到本地「会话中枢」图库。本地优先，数据不出本机。",
-  "permissions": ["tabs"],
+  "name": "AI-ing Hub · 捕获 Capture",
+  "version": "0.2.0",
+  "description": "把没做完的 AI 对话和网页收进本地 AI-ing Hub：点击浮点、按快捷键或右键即可收纳。Local-first capture of unfinished AI chats and web pages.",
+  "permissions": ["tabs", "storage", "contextMenus", "activeTab"],
   "host_permissions": [
-    "https://chatgpt.com/*",
-    "https://claude.ai/*",
-    "https://gemini.google.com/*",
+    "<all_urls>",
     "http://127.0.0.1:54321/*"
   ],
   "background": { "service_worker": "background.js" },
+  "action": {
+    "default_title": "打开 AI-ing Hub · Open AI-ing Hub"
+  },
+  "commands": {
+    "capture-current": {
+      "suggested_key": { "default": "Alt+Shift+S" },
+      "description": "收纳当前标签页 · Capture the current tab"
+    },
+    "open-hub": {
+      "suggested_key": { "default": "Alt+Shift+H" },
+      "description": "打开 AI-ing Hub 面板 · Open the hub panel"
+    }
+  },
   "content_scripts": [
     {
-      "matches": [
-        "https://chatgpt.com/*",
-        "https://claude.ai/*",
-        "https://gemini.google.com/*"
-      ],
+      "matches": ["<all_urls>"],
       "js": ["content.js"],
       "css": ["dot.css"],
-      "run_at": "document_idle"
+      "run_at": "document_idle",
+      "all_frames": false
     }
   ]
 }

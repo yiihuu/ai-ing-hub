@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>会话中枢</title>
+  <title>AI-ing Hub · 未完成任务面板</title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
       <span class="brand-dot"></span>
-      <span class="brand-name">会话中枢</span>
-      <span class="brand-sub">进行中的 AI 对话</span>
+      <span class="brand-name">AI-ing Hub</span>
+      <span class="brand-sub">未完成的任务 · AI 对话与网页</span>
     </div>
     <div class="search">
-      <input id="search" type="text" placeholder="搜索对话…" autocomplete="off" />
+      <input id="search" type="text" placeholder="搜索任务…" autocomplete="off" />
     </div>
-    <div class="count" id="count">0 个进行中</div>
+    <div class="count" id="count">0 个未完成</div>
   </header>
 
   <nav class="filters" id="filters"></nav>
@@ -25,10 +25,10 @@
 
   <div class="empty" id="empty" hidden>
     <div class="empty-art">◎</div>
-    <div class="empty-title">这里收着你正在进行中的 AI 对话</div>
+    <div class="empty-title">这里收着你所有<strong>没做完</strong>的事</div>
     <div class="empty-sub">
-      打开 ChatGPT / Claude / Gemini 的对话，把对话里的一段文字<strong>拖到页面右下角的小圆点上</strong>，它就会变成一张卡片出现在这里。<br/>
-      之后点这张卡片，就能一键回到那个对话 —— 不用再在多个软件里翻找。
+      不只是 AI 对话 —— <strong>Overleaf 的论文、Sheets 的访谈表、任何没写完的网页</strong>，都能收进来。<br/>
+      收纳后原网页<strong>照常开着</strong>，这里只留一个入口；点一下就回到原处。
     </div>
     <div class="empty-actions">
       <button id="demoBtn" class="empty-btn">先看看示例长什么样</button>
@@ -39,10 +39,14 @@
         <li>在浏览器地址栏输入 <code>chrome://extensions</code>（Edge 也通用）回车</li>
         <li>右上角打开「<b>开发者模式</b>」开关</li>
         <li>点「<b>加载已解压的扩展程序</b>」，选择项目里的 <code>extension</code> 文件夹</li>
-        <li>打开任意 ChatGPT / Claude 对话，右下角会出现一个<b>小圆点</b></li>
-        <li>在对话里选中一段文字，<b>拖到小圆点上松手</b> → 卡片就进来了</li>
+        <li>打开<strong>任意网页</strong>（不只是 AI 对话），右下角会出现一个<b>小圆点</b></li>
+        <li><b>点一下圆点</b> → 当前页面收进面板；再点一下 → 取消收纳</li>
       </ol>
-      <p class="howto-note">小圆点由浏览器扩展提供；本页面只负责把收进来的对话整齐地摆在这里。</p>
+      <p class="howto-note">
+        还有两个更省力的方式：按 <code>Alt + Shift + S</code> 收纳当前标签页；在任意页面上<b>右键</b> →
+        「收纳到 AI-ing Hub」。把页面上的<b>链接拖到圆点</b>上也能收纳那个链接。
+        圆点可以拖动挪位置，位置会被记住。
+      </p>
     </div>
   </div>
 

@@ -69,9 +69,10 @@ body {
 
 /* ---------- 图库 ---------- */
 .gallery {
-  flex: 1; overflow-y: auto;
+  flex: 1; overflow-y: auto; min-height: 0;
   display: grid; gap: 18px;
   grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+  grid-auto-rows: max-content;
   padding: 18px 28px 40px;
   align-content: start;
 }
@@ -134,6 +135,16 @@ body {
   overflow: hidden;
 }
 .time { margin-top: 8px; font-size: 11px; color: #9aa1ad; }
+.foot {
+  margin-top: 9px; display: flex; align-items: center; gap: 8px;
+}
+.kind {
+  font-size: 10px; font-weight: 600; letter-spacing: .3px;
+  padding: 2px 7px; border-radius: 999px;
+}
+.kind.ai { color: #6d28d9; background: rgba(124, 58, 237, .10); }
+.kind.web { color: #0f766e; background: rgba(13, 148, 136, .12); }
+.foot .time { margin-top: 0; }
 
 /* ---------- 空状态 ---------- */
 .empty {
@@ -141,6 +152,8 @@ body {
   align-items: center; justify-content: center; gap: 10px;
   color: var(--text-soft); text-align: center; padding: 40px;
 }
+/* [hidden] 必须能压过上面的 display:flex，否则空状态会一直占位 */
+.empty[hidden] { display: none; }
 .empty-art { font-size: 46px; opacity: .5; }
 .empty-title { font-size: 16px; font-weight: 600; color: var(--text); }
 .empty-sub { font-size: 13px; line-height: 1.7; max-width: 460px; }

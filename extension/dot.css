@@ -1,4 +1,4 @@
-/* AI 会话中枢 —— 浮点 dot 视觉 */
+/* AI-ing Hub —— 浮动收纳点 dot 样式（可拖动的常驻浮点）*/
 .ai-ing-dot {
   position: fixed;
   right: 24px;
@@ -15,7 +15,7 @@
   cursor: pointer;
   touch-action: none;
   user-select: none;
-  transition: transform .28s cubic-bezier(.34, 1.56, .64, 1), box-shadow .28s ease, width .3s ease, height .3s ease;
+  transition: transform .28s cubic-bezier(.34, 1.56, .64, 1), box-shadow .28s ease, width .3s ease, height .3s ease, opacity .2s ease;
 }
 .ai-ing-dot:active { transform: scale(.92); }
 .ai-ing-dot__core {
@@ -38,6 +38,12 @@
   width: 13px;
   height: 13px;
   box-shadow: inset 0 0 0 3px #6E8BFF, 0 0 0 4px rgba(110, 139, 255, .35);
+}
+/* 中枢未启动时的离线态：变灰、变淡 */
+.ai-ing-dot.is-offline {
+  opacity: .42;
+  filter: grayscale(.7);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
 }
 .ai-ing-dot.pulse { animation: ai-ing-pulse .5s ease; }
 @keyframes ai-ing-pulse {

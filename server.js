@@ -1,5 +1,6 @@
-// AI 会话中枢 —— 本地中枢服务（零依赖 Node）
-// 职责：托管前端 + 接收浏览器扩展上报的会话元数据 + SSE 实时推送
+// AI-ing Hub —— 本地中枢服务（零依赖 Node）
+// 职责：托管前端 + 接收浏览器扩展上报的任务元数据 + SSE 实时推送
+// 一个「任务」= 一条未完成工作的引用（AI 对话 / 任意网页），只存元数据，不存正文。
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -8,11 +9,31 @@ const PORT = 54321;
 const ROOT = path.join(__dirname, 'src');
 const DATA_FILE = path.join(__dirname, 'sessions.json');
 
-// 内存索引：url -> session
+// 规范化：去掉 hash（同一文档的不同位置算同一条），去掉常见噪声 query 参数
+const NOISE_PARAM = /^(utm_|fbclid$|gclid$|dclid$|ref$|referrer$|source$|usp$|spm$|mc_cid$|mc_eid$|igshid$|_hsenc$|_hsmi$|si$)/i;
+function normKey(raw) {
+  if (!raw) return '';
+  try {
+    const u = new URL(raw);
+    u.hash = '';
+    [...u.searchParams.keys()].forEach(k => { if (NOISE_PARAM.test(k)) u.searchParams.delete(k); });
+    let s = u.toString();
+    if (u.pathname !== '/' && s.endsWith('/')) s = s.slice(0, -1);
+    return s;
+  } catch (_) {
+    return String(raw).split('#')[0];
+  }
+}
+
+// 内存索引：key -> task
 const sessions = new Map();
 try {
   const raw = fs.readFileSync(DATA_FILE, 'utf8');
-  JSON.parse(raw).forEach(s => sessions.set(s.url, s));
+  JSON.parse(raw).forEach(s => {
+    if (!s || !s.url) return;
+    s.key = s.key || normKey(s.url);
+    sessions.set(s.key, s);
+  });
 } catch (_) { /* 首次运行无文件 */ }
 
 const sseClients = new Set();
@@ -27,22 +48,33 @@ function broadcast() {
 }
 function upsert(s) {
   if (!s || !s.url) return false;
-  const existing = sessions.get(s.url);
+  const key = s.key || normKey(s.url);
+  if (!key) return false;
+  const existing = sessions.get(key);
   if (existing) {
     Object.assign(existing, {
-      provider: s.provider, title: s.title,
-      preview: s.preview, favicon: s.favicon, updatedAt: Date.now()
+      provider: s.provider || existing.provider,
+      title: s.title || existing.title,
+      preview: s.preview !== undefined ? s.preview : existing.preview,
+      favicon: s.favicon || existing.favicon,
+      type: s.type || existing.type,
+      source: s.source || existing.source,
+      url: s.url,                       // 记录最新的一次完整 URL（带 hash，回到原位）
+      updatedAt: Date.now()
     });
   } else {
+    s.key = key;
+    s.type = s.type || 'web';
+    s.source = s.source || 'click';
     s.firstSeen = Date.now();
     s.updatedAt = Date.now();
-    sessions.set(s.url, s);
+    sessions.set(key, s);
   }
   broadcast();
   return true;
 }
-function remove(url) {
-  if (sessions.delete(url)) { broadcast(); return true; }
+function remove(key) {
+  if (sessions.delete(key)) { broadcast(); return true; }
   return false;
 }
 
@@ -88,11 +120,12 @@ const server = http.createServer((req, res) => {
     });
     return;
   }
-  // 移除
+  // 移除（优先按 key，其次按 url 反推 key）
   if (url.pathname === '/api/session' && req.method === 'DELETE') {
-    const ok = remove(url.searchParams.get('url'));
+    const key = url.searchParams.get('key') || normKey(url.searchParams.get('url'));
+    const ok = remove(key);
     res.writeHead(ok ? 200 : 404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ ok }));
+    res.end(JSON.stringify({ ok, key }));
     return;
   }
   // 初始列表
@@ -117,5 +150,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, '127.0.0.1', () => {
-  console.log(`AI 会话中枢已启动 → http://127.0.0.1:${PORT}`);
+  console.log(`AI-ing Hub 已启动 → http://127.0.0.1:${PORT}`);
 });

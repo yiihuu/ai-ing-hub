@@ -23,3 +23,9 @@
 - **圆球 toggle / Toggle**: 用户反馈「再次点击应放大并移除看板卡片」。已修正 `content.js`：点击逻辑改为切换——已收纳时点击 → `DELETE /api/session?url=` 移除、圆球长回大球；未收纳时点击 → POST 收纳。提示文字改为「已收纳 · 再次点击移除」。
 - **进展页 / Progress page**: 新增 `PROGRESS.md`（对外进展汇总，区别于逐日流水 DEVLOG），并在 README 顶部加链接。约定：代码改动累积到一定量时由维护者总结更新本页。
 - **PROGRESS 改版 / Progress restyle**: 改为表格化、同一天合并一行、日期用品牌紫 emoji 圆点 + 加粗使其醒目（GitHub markdown 不支持自定义文字色，故用 emoji 实现彩色）。
+- **定位升级 / Scope expansion**: 从「跨 AI 会话收纳」扩展为「通用未完成任务收件箱」——AI 对话与任意未完成网页（Overleaf / Sheets / 任意标签页）统一收纳；原网页保持打开，只留一条引用。定位由「AI 聚合器」转向「降低多任务并行的认知负担、对低精力人群友好」。
+- **交互定案 / Interaction decision**: 主路径按「省力程度」排序定为 ① 快捷键 `Alt+Shift+S`（零视觉搜寻）→ ② 点击常驻浮点 → ③ 右键菜单；拖拽降级为增强路径（浏览器原生只能拖链接 / 选中文字，无法真正拖入一个网页）。浮点可拖动且位置被记住。
+- **实现 / Build**: 扩展改为全站注入（`<all_urls>`）；新增 `background.js` 的快捷键、右键菜单（页面 / 链接 / 选中文字 / 显示隐藏浮点）、任务数徽章、`chrome.tabs` 聚焦桥接；`content.js` 重写为通用收纳 + 拖拽收纳 + 位置持久化 + 面板页桥接；`server.js` 支持 `type` / `key` / `source`，URL 去 hash 与噪声参数后作键。
+- **面板升级 / Panel upgrade**: 卡片网格支持混合任务，按「AI 对话 / 网页任务 / 具体站点」筛选，卡片带类型标签，计数区分两类；点卡片经扩展桥接聚焦已开着的标签页，未打开时由扩展代为新开。
+- **验证 / Verify**: 后端 curl 端到端通过（上报 / 列表 / SSE / 移除 / 类型字段 / 同文档多页签合并）；headless Chrome 截图复核面板渲染，并修掉两个真实 bug —— `.empty` 的 `display:flex` 压过 `[hidden]` 导致空状态常驻挤压图库、grid 行被压扁导致卡片裁切（改用 `grid-auto-rows: max-content`）。
+- 下一步 / Next：低精力小样本评估（NASA-TLX 一类量表）；应用内 i18n 切换；桌面端 Tauri 封装。
