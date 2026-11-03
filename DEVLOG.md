@@ -7,7 +7,7 @@
 - 完成最小可跑原型：Node 中枢 + 卡片网格前端 + MV3 浏览器捕获扩展；curl 端到端验证通过。
 - 仓库改名 ai-session-hub → ai-ing-hub。
 - README 改为双语 + 顶部徽章行，补齐 GitHub 常见板块（Features / Getting Started / Structure 等）。
-- 下一步 / Next：应用内 i18n 切换；整理材料；扩展更多 AI 源（Gemini / 本地 LLM 客户端）。
+- 下一步 / Next：应用内 i18n 切换；扩展更多 AI 源（Gemini / 本地 LLM 客户端）。
 - 待解 / Open：精确聚焦已有标签页需 chrome.tabs 桥接（扩展 background 与中枢通信）。
 - 已知 / Known：DOM 抓取选择器随站点更新；当前仅抓标题/URL/短预览。
 
@@ -17,7 +17,7 @@
 - **捕获交互再修正 / Capture fix**：实测发现 ChatGPT/Claude 等网页会拦截「选中文字拖拽」，文字拖不到 dot。改为主交互「点击 dot 收纳当前对话」，选中文字拖拽降为附带增强。dot.css 光标/动效改为点击反馈。
 - README：Huabu 从定位句抽出，移入 `Related Work` 留待作者自写占位；全文「拖拽收纳」措辞改为「点击/拖拽收纳」。
 - 验证 / Verify：`node server.js` 起服务后，在 AI 对话页点击 dot → 图库应即时出现该对话卡片（SSE 推送）。
-- 下一步 / Next：应用内 i18n 切换；评估「自动发现 + 手动确认」增强；文档脚手架（private）。
+- 下一步 / Next：应用内 i18n 切换；评估「自动发现 + 手动确认」增强；离线文档脚手架（private）。
 - **浮点双形态 / Dual-state dot**: 已收纳的 dot 缩小（34px，核心 13px）以区别于未收纳（56px）；提示文字切换为「已收纳 · 点击更新」。强化「收纳过 vs 未收纳」的视觉区分。
 - **产品路线确认 / Product framing**: 当前网页版 = 最小可用性测试（MVP）；后续依次为 桌面端独立轻量软件（local-first）、网页+软件一起收纳、多 AI 一起收纳、看板视图迭代。README 已增 Roadmap 区块。
 - **圆球 toggle / Toggle**: 用户反馈「再次点击应放大并移除看板卡片」。已修正 `content.js`：点击逻辑改为切换——已收纳时点击 → `DELETE /api/session?url=` 移除、圆球长回大球；未收纳时点击 → POST 收纳。提示文字改为「已收纳 · 再次点击移除」。
