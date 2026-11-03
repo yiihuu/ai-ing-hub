@@ -26,12 +26,15 @@ function normKey(raw) {
 }
 
 // 内存索引：key -> task
+const AI_NAMES = ['ChatGPT', 'Claude', 'Gemini', 'DeepSeek', 'Mistral'];
 const sessions = new Map();
 try {
   const raw = fs.readFileSync(DATA_FILE, 'utf8');
   JSON.parse(raw).forEach(s => {
     if (!s || !s.url) return;
     s.key = s.key || normKey(s.url);
+    if (!s.type) s.type = AI_NAMES.includes(s.provider) ? 'ai' : 'web';  // 兼容旧数据
+    if (!s.source) s.source = 'legacy';
     sessions.set(s.key, s);
   });
 } catch (_) { /* 首次运行无文件 */ }
