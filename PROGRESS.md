@@ -13,6 +13,11 @@
   </thead>
   <tbody>
     <tr>
+      <td style="color:#1971c2;font-weight:700;vertical-align:top;white-space:nowrap;background:#e7f5ff;border-radius:6px;padding:6px 10px"><b>2026-11-06</b></td>
+      <td>扩展更多 AI 源：新增 <b>Perplexity</b> 与 <b>WorkBuddy</b> 网页版自动识别（DeepSeek 主页域名一并覆盖）；面板新增「＋ 添加链接」手动收纳入口，用于把原生桌面 App 的对话链接收进 Hub，provider 由服务端按 URL 自动归类。 Added Perplexity &amp; WorkBuddy detection; added a manual "Add link" entry for desktop-app conversations.</td>
+    </tr>
+
+    <tr>
       <td rowspan="9" style="color:#d6336c;font-weight:700;vertical-align:top;white-space:nowrap;background:#fff0f6;border-radius:6px;padding:6px 10px"><b>2026-11-03</b></td>
       <td>定位扩展：从「跨 AI 会话收纳」升级为「通用未完成任务收件箱」——AI 对话与任意未完成网页（Overleaf / Sheets 等）统一收纳。 Scope expanded from cross-AI chat capture to a universal inbox of unfinished tasks (AI chats + any web page).</td>
     </tr>

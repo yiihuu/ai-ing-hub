@@ -13,8 +13,10 @@ const AI_HOST = [
   [/chatgpt\.com/i, 'ChatGPT'],
   [/claude\.ai/i, 'Claude'],
   [/gemini/i, 'Gemini'],
-  [/chat\.deepseek\.com/i, 'DeepSeek'],
-  [/chat\.mistral\.ai/i, 'Mistral']
+  [/deepseek\.com/i, 'DeepSeek'],
+  [/chat\.mistral\.ai/i, 'Mistral'],
+  [/perplexity\.ai/i, 'Perplexity'],
+  [/workbuddy\.ai/i, 'WorkBuddy']
 ];
 const KNOWN_HOST = {
   'docs.google.com': 'Google Docs',

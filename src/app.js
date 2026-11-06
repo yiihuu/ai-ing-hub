@@ -1,10 +1,11 @@
 // AI-ing Hub 面板前端：SSE 实时同步 + 卡片网格 + 混合任务（AI 对话 / 网页）
 const PROVIDER_COLOR = {
   ChatGPT: '#10a37f', Claude: '#d97757', Gemini: '#4285f4',
-  DeepSeek: '#4d6bfe', Mistral: '#f97316'
+  DeepSeek: '#4d6bfe', Mistral: '#f97316',
+  Perplexity: '#20808d', WorkBuddy: '#7c3aed'
 };
 const DEFAULT_COLOR = '#6b7280';
-const AI_NAMES = ['ChatGPT', 'Claude', 'Gemini', 'DeepSeek', 'Mistral'];
+const AI_NAMES = ['ChatGPT', 'Claude', 'Gemini', 'DeepSeek', 'Mistral', 'Perplexity', 'WorkBuddy'];
 
 const gallery = document.getElementById('gallery');
 const filtersEl = document.getElementById('filters');
@@ -206,6 +207,38 @@ function applyView() {
 
 searchEl.addEventListener('input', applyView);
 
+// 添加链接：面板内手动收纳入口（网页版 + 桌面版 Hub 通用），用于把原生桌面 App 里能拿到链接的对话收进来
+// provider/type 由服务端按 URL 自动识别，无需前端维护检测逻辑
+const addBtn = document.getElementById('addBtn');
+const addRow = document.getElementById('addRow');
+const addUrl = document.getElementById('addUrl');
+const addTitle = document.getElementById('addTitle');
+const addConfirm = document.getElementById('addConfirm');
+const addHint = document.getElementById('addHint');
+if (addBtn) addBtn.addEventListener('click', () => {
+  addRow.hidden = !addRow.hidden;
+  if (!addRow.hidden) addUrl.focus();
+});
+function doManualAdd() {
+  const url = (addUrl.value || '').trim();
+  if (!/^https?:\/\//i.test(url)) { addHint.textContent = '请输入以 http(s):// 开头的链接'; return; }
+  addHint.textContent = '添加中…';
+  fetch('/api/session', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url, title: (addTitle.value || '').trim(), preview: '', source: 'manual' })
+  }).then(r => r.json()).then(d => {
+    if (d && d.ok) {
+      addUrl.value = ''; addTitle.value = ''; addHint.textContent = '已添加 ✓';
+      setTimeout(() => { addRow.hidden = true; addHint.textContent = ''; }, 1200);
+    } else {
+      addHint.textContent = '添加失败，检查链接格式';
+    }
+  }).catch(() => { addHint.textContent = '无法连接中枢服务'; });
+}
+if (addConfirm) addConfirm.addEventListener('click', doManualAdd);
+if (addUrl) addUrl.addEventListener('keydown', e => { if (e.key === 'Enter') doManualAdd(); });
+if (addTitle) addTitle.addEventListener('keydown', e => { if (e.key === 'Enter') doManualAdd(); });
+
 // 空状态：先看示例（不需要装任何东西）
 const demoBtn = document.getElementById('demoBtn');
 if (demoBtn) demoBtn.addEventListener('click', async () => {
@@ -217,7 +250,11 @@ if (demoBtn) demoBtn.addEventListener('click', async () => {
     { provider: 'Overleaf', type: 'web', title: '排版模板 v3', url: 'https://www.overleaf.com/project/demo-3',
       preview: '' },
     { provider: 'Google Sheets', type: 'web', title: '预形成性访谈记录表', url: 'https://docs.google.com/spreadsheets/d/demo-4/edit',
-      preview: '' }
+      preview: '' },
+    { provider: 'Perplexity', type: 'ai', title: '文献检索对比', url: 'https://www.perplexity.ai/search/demo-5',
+      preview: '对比三篇关于 sensemaking 的论文，给出可引用的结论与争议点…' },
+    { provider: 'WorkBuddy', type: 'ai', title: '访谈提纲润色', url: 'https://workbuddy.ai/chat/demo-6',
+      preview: '把半结构访谈问题改得更口语、减少引导性…' }
   ];
   for (const s of samples) {
     await fetch('/api/session', {

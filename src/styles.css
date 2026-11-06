@@ -183,3 +183,32 @@ body {
   .topbar { flex-wrap: wrap; gap: 10px; }
   .search { order: 3; max-width: none; flex-basis: 100%; }
 }
+
+/* ---------- 添加链接（桌面手动收纳入口） ---------- */
+.add-btn {
+  border: 1px solid var(--line-strong); background: var(--surface); color: var(--accent);
+  font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  padding: 8px 14px; border-radius: 11px; white-space: nowrap;
+  transition: border-color .15s, box-shadow .15s;
+}
+.add-btn:hover { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
+.add-row {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 12px 28px; border-bottom: 1px solid var(--line);
+  background: rgba(255,255,255,.55);
+}
+.add-row[hidden] { display: none; }
+.add-row input {
+  font: inherit; font-size: 13px; padding: 8px 12px;
+  border: 1px solid var(--line-strong); border-radius: 10px;
+  background: var(--surface); color: var(--text); outline: none;
+}
+#addUrl { flex: 1; min-width: 220px; }
+.add-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
+.add-confirm {
+  border: 0; cursor: pointer; font: inherit; font-size: 13px; font-weight: 600;
+  padding: 8px 18px; border-radius: 10px; color: #fff;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+}
+.add-confirm:hover { transform: translateY(-1px); }
+.add-hint { font-size: 12px; color: var(--text-soft); }

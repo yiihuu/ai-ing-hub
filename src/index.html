@@ -17,7 +17,15 @@
       <input id="search" type="text" placeholder="搜索任务…" autocomplete="off" />
     </div>
     <div class="count" id="count">0 个未完成</div>
+    <button id="addBtn" class="add-btn" title="添加链接：网页版对话，或桌面 App 里能复制到的对话链接">＋ 添加链接</button>
   </header>
+
+  <div class="add-row" id="addRow" hidden>
+    <input id="addUrl" type="url" placeholder="粘贴链接：网页版对话，或桌面 App 里能复制到的链接（如 https://chat.deepseek.com/c/...）" autocomplete="off" />
+    <input id="addTitle" type="text" placeholder="标题（可留空，自动取站点名）" autocomplete="off" />
+    <button id="addConfirm" class="add-confirm">添加</button>
+    <span class="add-hint" id="addHint"></span>
+  </div>
 
   <nav class="filters" id="filters"></nav>
 

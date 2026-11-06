@@ -29,3 +29,9 @@
 - **面板升级 / Panel upgrade**: 卡片网格支持混合任务，按「AI 对话 / 网页任务 / 具体站点」筛选，卡片带类型标签，计数区分两类；点卡片经扩展桥接聚焦已开着的标签页，未打开时由扩展代为新开。
 - **验证 / Verify**: 后端 curl 端到端通过（上报 / 列表 / SSE / 移除 / 类型字段 / 同文档多页签合并）；headless Chrome 截图复核面板渲染，并修掉两个真实 bug —— `.empty` 的 `display:flex` 压过 `[hidden]` 导致空状态常驻挤压图库、grid 行被压扁导致卡片裁切（改用 `grid-auto-rows: max-content`）。
 - 下一步 / Next：低精力小样本评估（NASA-TLX 一类量表）；应用内 i18n 切换；桌面端 Tauri 封装。
+
+## 2026-11-06
+- 扩展支持更多 AI 源：新增 **Perplexity** 与 **WorkBuddy** 的网页版自动识别；DeepSeek 检测从 `chat.deepseek.com` 扩到 `deepseek.com`（覆盖主页与对话页）。同步更新 `server.js` 的 AI_NAMES、面板 `PROVIDER_COLOR` 品牌色、标题清洗正则（`cleanTitle`）。
+- 面板新增「＋ 添加链接」手动收纳入口（网页版 + Tauri 桌面版通用），用于把原生桌面 App 里能拿到链接的对话收进 Hub；provider/type 由服务端新增的 `siteOf()` 按 URL 自动归类，消除手动添加时的分类歧义。
+- 已知技术债 / Tech debt：站点识别逻辑目前仍分散在 `extension/content.js`、`extension/background.js`、`server.js` 三处，后续应抽成单一共享模块（扩展内可借 `providers.js` 被 content/background 共同引用）。
+- 下一步 / Next：低精力小样本评估（NASA-TLX）；应用内 i18n；桌面端 Tauri 封装。

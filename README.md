@@ -42,6 +42,8 @@
 - Local-first, metadata-only: message bodies are never stored; minimal privacy surface.
 - 轻量：中枢服务零依赖（Node），桌面壳可选（Tauri）。
 - Lightweight: the hub server is zero-dependency (Node); the desktop shell is optional (Tauri).
+- **已支持的多 AI 源**：ChatGPT / Claude / Gemini / DeepSeek / Perplexity / WorkBuddy；原生桌面 App 的对话可复制链接后在面板「＋ 添加链接」手动收纳。
+- Supported AI sources: ChatGPT / Claude / Gemini / DeepSeek / Perplexity / WorkBuddy. Conversations from native desktop apps can be filed by pasting their link via the panel's "＋ Add link" box.
 
 ## 项目定位 · Positioning
 
@@ -162,5 +164,6 @@ ai-ing-hub/
 - Capture still takes one active gesture (hotkey / click / right-click). An optional "auto-discover + confirm" layer can be added later.
 - 「跳回」依赖扩展桥接（`chrome.tabs`）；未安装扩展时退化为新开标签页。
 - "Jump back" relies on the extension bridge (`chrome.tabs`); without the extension it falls back to opening a new tab.
-- 桌面原生 App（本地 LLM 客户端等）需另接其本地日志 / API。
+- 桌面原生 App（本地 LLM 客户端、各 AI 的桌面端等）暂无法被浏览器扩展直接读取；当前可用面板「＋ 添加链接」粘贴对话链接作为轻量替代，后续可接其本地日志 / API。
+- Native desktop apps (local LLM clients, each AI's desktop build, …) cannot be read by the browser extension directly yet; for now you can paste a conversation link in the panel's "＋ Add link" box as a lightweight alternative, with a local-log/API bridge as future work.
 - 应用内中英文切换（i18n）为规划中功能。

@@ -26,7 +26,44 @@ function normKey(raw) {
 }
 
 // 内存索引：key -> task
-const AI_NAMES = ['ChatGPT', 'Claude', 'Gemini', 'DeepSeek', 'Mistral'];
+// 站点识别（服务端兜底，供面板「手动添加链接」等未带 provider 的上报自动归类）
+const AI_HOST = [
+  [/chatgpt\.com/i, 'ChatGPT'],
+  [/claude\.ai/i, 'Claude'],
+  [/gemini/i, 'Gemini'],
+  [/deepseek\.com/i, 'DeepSeek'],
+  [/chat\.mistral\.ai/i, 'Mistral'],
+  [/perplexity\.ai/i, 'Perplexity'],
+  [/workbuddy\.ai/i, 'WorkBuddy']
+];
+const KNOWN_HOST = {
+  'docs.google.com': 'Google Docs',
+  'drive.google.com': 'Google Drive',
+  'mail.google.com': 'Gmail',
+  'calendar.google.com': 'Google Calendar',
+  'scholar.google.com': 'Google Scholar',
+  'overleaf.com': 'Overleaf',
+  'notion.so': 'Notion',
+  'figma.com': 'Figma',
+  'github.com': 'GitHub',
+  'arxiv.org': 'arXiv',
+  'google.com': 'Google'
+};
+function siteOf(url) {
+  let h = '', p = '';
+  try { const u = new URL(url); h = u.hostname; p = u.pathname; } catch (_) { return { provider: '未知', type: 'web' }; }
+  for (const [re, name] of AI_HOST) if (re.test(h)) return { provider: name, type: 'ai' };
+  let bare = h.replace(/^www\./, '');
+  if (bare === 'docs.google.com') {
+    if (p.includes('/spreadsheets/')) return { provider: 'Google Sheets', type: 'web' };
+    if (p.includes('/presentation/')) return { provider: 'Google Slides', type: 'web' };
+  }
+  if (KNOWN_HOST[bare]) return { provider: KNOWN_HOST[bare], type: 'web' };
+  const label = bare.split('.').length > 2 ? bare.split('.').slice(-2).join('.') : bare;
+  return { provider: label.charAt(0).toUpperCase() + label.slice(1), type: 'web' };
+}
+
+const AI_NAMES = ['ChatGPT', 'Claude', 'Gemini', 'DeepSeek', 'Mistral', 'Perplexity', 'WorkBuddy'];
 const sessions = new Map();
 try {
   const raw = fs.readFileSync(DATA_FILE, 'utf8');
@@ -53,6 +90,12 @@ function upsert(s) {
   if (!s || !s.url) return false;
   const key = s.key || normKey(s.url);
   if (!key) return false;
+  // provider/type 兜底：面板「手动添加链接」等未带 provider 的上报，按 URL 自动归类
+  if (!s.provider) {
+    const site = siteOf(s.url);
+    s.provider = site.provider;
+    if (!s.type) s.type = site.type;
+  }
   const existing = sessions.get(key);
   if (existing) {
     Object.assign(existing, {
